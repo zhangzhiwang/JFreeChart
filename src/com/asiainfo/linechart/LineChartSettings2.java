@@ -17,40 +17,32 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.data.time.Day;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.TextAnchor;
 
 /**
- * 现形图美化（按年统计）
+ * 折线图美化（按月统计）
  * 
  * @author zhangzhiwang
- * @date 2017年2月27日 下午2:15:58
+ * @date 2017年2月27日 下午3:52:35
  */
-public class LineChartSettings {
+public class LineChartSettings2 {
 	public static void main(String[] args) throws IOException {
 		// 准备数据
-		TimeSeries timeSeries = new TimeSeries("宝马销量ABC", Month.class);
-		timeSeries.add(new Month(1, 2016), 100);
-		timeSeries.add(new Month(2, 2016), 200);
-		timeSeries.add(new Month(3, 2016), 300);
-		timeSeries.add(new Month(4, 2016), 400);
-		timeSeries.add(new Month(5, 2016), 500);
-		timeSeries.add(new Month(6, 2016), 600);
-		timeSeries.add(new Month(7, 2016), 200);
-		timeSeries.add(new Month(8, 2016), 500);
-		timeSeries.add(new Month(9, 2016), 700);
-		timeSeries.add(new Month(10, 2016), 900);
-		timeSeries.add(new Month(11, 2016), 900);
-		timeSeries.add(new Month(12, 2016), 700);
-
+		TimeSeries timeSeries = new TimeSeries("", Day.class);
+		for(int i = 1; i <= 31; i++) {
+			timeSeries.add(new Day(i, 1, 2017), i + 1);
+		}
+		
 		TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
 		timeSeriesCollection.addSeries(timeSeries);
 
 		// 创建图表
-		JFreeChart jFreeChart = ChartFactory.createTimeSeriesChart("宝马销量", // title 图表标题
-				"月份", // categoryAxisLabel 横轴坐标名称
+		JFreeChart jFreeChart = ChartFactory.createTimeSeriesChart("", // title 图表标题
+				"日期", // categoryAxisLabel 横轴坐标名称
 				"销量", // valueAxisLabel 纵轴坐标名称
 				timeSeriesCollection, // dataset 数据集
 				false, // legend 是否显示图例
@@ -58,17 +50,17 @@ public class LineChartSettings {
 				true);// urls 是否显示url
 
 		// 设置主标题（美化图表标题）
-		jFreeChart.setTitle(new TextTitle("宝马年销量", new Font("黑体", Font.BOLD, 20)));
+		jFreeChart.setTitle(new TextTitle("宝马1月份销量", new Font("黑体", Font.BOLD, 20)));
 		// 设置子标题
-		TextTitle subtitle = new TextTitle("2016年度", new Font("宋体", Font.ITALIC, 12));
+		TextTitle subtitle = new TextTitle("2017年", new Font("宋体", Font.ITALIC, 12));
 		jFreeChart.addSubtitle(subtitle);
 		jFreeChart.setAntiAlias(true);
 
 		// 设置时间轴的范围。
 		XYPlot plot = (XYPlot) jFreeChart.getPlot();
 		DateAxis dateaxis = (DateAxis) plot.getDomainAxis();
-		dateaxis.setDateFormatOverride(new java.text.SimpleDateFormat("M月"));//格式化x轴数据显示格式
-		dateaxis.setTickUnit(new DateTickUnit(DateTickUnit.MONTH, 1));//x轴数据增量
+		dateaxis.setDateFormatOverride(new java.text.SimpleDateFormat("dd日"));// 格式化x轴数据显示格式,java.text.SimpleDateFormat的用法参考：http://cncoke.iteye.com/blog/1397669
+		dateaxis.setTickUnit(new DateTickUnit(DateTickUnit.DAY, 1));// x轴数据增量
 
 		// 设置曲线是否显示数据点
 		XYLineAndShapeRenderer xylinerenderer = (XYLineAndShapeRenderer) plot.getRenderer();
@@ -83,8 +75,8 @@ public class LineChartSettings {
 		plot.setRenderer(xyitem);
 
 		// 导出图片
-		OutputStream os = new FileOutputStream("/Users/zhangzhiwang/Pictures/JFreeChart/折线图美化.png");
-		ChartUtilities.writeChartAsPNG(os, jFreeChart, 700, 500);
+		OutputStream os = new FileOutputStream("/Users/zhangzhiwang/Pictures/JFreeChart/折线图美化(按月).png");
+		ChartUtilities.writeChartAsPNG(os, jFreeChart, 900, 500);
 		System.out.println("图表生成成功！");
 	}
 }
